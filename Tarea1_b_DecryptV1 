@@ -1,0 +1,45 @@
+		MOV		R12,#0X320 		; Posicion donde se guardara la longitud
+		MOV		R1, #7 			; Longitud
+		STRB		R1, [R12,#0] 		; Guardo la longitud en la posicion 320h
+		MOV		R0, #0x00010000     ; Posicion de memoria inicial
+		MOV		R1, #0xD4			; Caracter 0
+		STRB		R1,[R0, #0x0]
+		MOV		R1, #0xC5			; Caracter 1
+		STRB		R1,[R0, #0x1]
+		MOV		R1, #0x16			; Caracter 2
+		STRB		R1,[R0, #0x2]
+		MOV		R1, #0x10			; Caracter 3
+		STRB		R1,[R0, #0x3]
+		MOV		R1, #0x32			; Caracter 4
+		STRB		R1,[R0, #0x4]
+		MOV		R1, #0x4B			; Caracter 5
+		STRB		R1,[R0, #0x5]
+		MOV		R1, #0x35			; Caracter 6
+		STRB		R1,[R0, #0x6]
+		MOV		R1, #0x25			; Caracter 7
+		STRB		R1,[R0, #0x7]
+		
+		MOV		R1, #0x00000005	; Key para Xor
+		LDRB		R2,[R12,#0]         ; Cargo la longitud
+LOOP		LDRB		R3, [R0, R2] 	 	; Obtengo el primer Byte
+		EOR		R3, R3, R1   		; Xor con Key
+		SUB		R3, R3,#20   		; Sumarle 20
+		AND		R4,R3,#0XFF  		; Obtengo unicamente el primer Byte (limpio para que me queden solo los ultimos 4 bits)
+		STRB		R4,[R0, R2]		; Guardo el byte en memoria
+		CMP		R2, #0	   		; Verifico si el contador llego a cero
+		SUBNE	R2, R2, #1   		; Resto en 1 el contador
+		BNE		LOOP		   		; Si el contador llego a cero termino, si no regreso al LOOP
+FIN
+		
+		
+		;--------------------------------------Desencriptacion-------------------------------------------------------
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
