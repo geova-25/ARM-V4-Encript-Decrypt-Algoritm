@@ -1,0 +1,38 @@
+		MOV		R0, #0X40 ; Posicion inicial donde se almacenan los terminos
+		MOV		R1, #0XF0 ; Valor a escribir para hacer peticion
+		MOV		R2, #0X10000 ; Direcion de memoria donde se escribe la peticion
+		MOV		R3, #0x10000 ; Direccion de memoria donde se recibe el comando de respuesta
+		MOV		R4, #0XFF ; Comando de respuesta
+		MOV		R5, #0X08 ; Direccion de la cantidad terminos
+		MOV		R6, #0X11 ; Señal de listo
+		
+		STRB		R1, [R2]
+		STRB		R4, [R2,#0x4] ;Prueba para almacenar 0XFF EN 0X4 para que funcione
+		
+		;------Este	es el loop que espera la respuesta "0XFF" en la direccion "0x4"; revisa continuamente
+		;------y	compara, si no es igual se devuelve a LOOP a hacer el proceso, si no continua
+		
+LOOP		LDRB		R7, [R2, #0x4] ; Carga de memoria la posicion 0x4
+		CMP		R7, #0XFF		; Compara el dato que se obtuvo de 0x4 con el dato esperado 0xFF
+		BNE		LOOP           ; Si el dato no es OXFF entonces se devuelve a comparar,
+		;		si el dato si cumple continua.
+		
+		LDRB		R7, [R2, #0x8] ; Carga la cantidad de terminos de la direccion 0x8
+		MOV		R8, #0X0 ; Terminos iniciales
+		MOV		R9, #0x1 ; Terminos iniciales
+		
+LOOP_2	CMP		R7, #0X0   ; COntador en 0?
+		ADDNE	R8, R8, R9 ; Se suma si no es 0
+		ADDNE	R9, R8, R9 ; Se suma si no es 0
+		SUBNE	R7, R7, #0X1 ; Resto 1 al contador
+		BNE		LOOP_2
+		
+		
+		AND		R7,R7,#0X1 ; Obtengo LSB
+		CMP		R7, #0X0 ; Comparo si es par
+		ORRNE	R10, R10, R9
+		ORREQ	R10, R10, R8
+		
+		
+		
+		STRB		R6, [R2] ; Almacena el listo (0X11) en 0x00
